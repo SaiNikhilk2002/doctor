@@ -1,31 +1,31 @@
+const express = require("express");
+const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-
-require("dotenv").config();
-
 const { registerDoctor, loginDoctor } = require("./controller/doctor");
 const {
   registerCompounder,
   loginCompounder,
   registerPatientByCompounder,
-  getLatestPatientByAdharCard,
+  getLatestPatientByID,
   listOfPatients,
+  updatePatient,
 } = require("./controller/compounder");
 
-const express = require('express');
 const app = express();
-
 const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 //////////////connection to database////////////////////
-uri= "mongodb+srv://ajayamunik:Nfed6RWJWGDd2fMN@cluster0.51duirc.mongodb.net/doctor_house"
-mongoose.connect(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://ajayamunik:Nfed6RWJWGDd2fMN@cluster0.51duirc.mongodb.net/doctor_house",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 const db = mongoose.connection;
 
@@ -53,7 +53,6 @@ app.post("/register-patient-by-compounder", registerPatientByCompounder);
 
 //get the latest patient details
 app.get("/patients-list", listOfPatients);
-
 
 // get the latest patient details by Aadhar card number
 app.get("/get-patient/:patientId", getLatestPatientByID);
