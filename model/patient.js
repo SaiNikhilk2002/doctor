@@ -52,6 +52,11 @@ const patientSchema = new mongoose.Schema(
     weight: {
       type: String,
     },
+    appointmentStatus: {
+      type: Boolean,
+      default: false,
+    },
+
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",

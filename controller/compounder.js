@@ -139,19 +139,17 @@ const registerPatientByCompounder = async (req, res) => {
   }
 };
 
-const getLatestPatientByAdharCard = async (req, res) => {
+const getLatestPatientByID = async (req, res) => {
   try {
-    const { adharCardNo } = req.params;
+    const { patientId } = req.params;
 
     // Find the latest patient with the specified Aadhar card number
-    const patient = await Patient.findOne({ adharCardNo })
-      .sort({ createdAt: -1 })
-      .limit(1);
+    const patient = await Patient.findById(patientId);
 
     if (!patient) {
       return res
         .status(200)
-        .json({ message: "Patient not found", responseCode: 200, data: null });
+        .json({ message: "Patient not found", responseCode: 400, data: null });
     }
 
     res.json({ data: patient, responseCode: 200, message: "Patient found" });
@@ -163,18 +161,56 @@ const getLatestPatientByAdharCard = async (req, res) => {
 
 const listOfPatients = async (req, res) => {
   try {
-    // Find the latest patient with the specified Aadhar card number
-    const patient = await Patient.find();
+    // Find all patients with appointmentStatus equal to false and sort by the createdAt field in descending order
+    const patients = await Patient.find({ appointmentStatus: false }).sort({
+      createdAt: -1,
+    });
 
-    if (!patient) {
-      return res
-        .status(200)
-        .json({ message: "Patient not found", responseCode: 200, data: null });
+    if (!patients || patients.length === 0) {
+      return res.status(200).json({
+        message: "No patients found",
+        responseCode: 400,
+        data: [],
+      });
     }
 
-    res.json({ data: patient, responseCode: 200, message: "Patient found" });
+    res.json({
+      data: patients,
+      responseCode: 200,
+      message: "Patients found",
+    });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const updatePatient = async (req, res) => {
+  const { patientId } = req.params;
+
+  try {
+    // Find by and update patient by id
+    const updatedPatient = await Patient.findByIdAndUpdate(
+      patientId,
+      { appointmentStatus: true },
+      { new: true }
+    );
+
+    if (!updatedPatient) {
+      return res.status(200).json({
+        message: "Patient not found",
+        responseCode: 404,
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      message: "Patient updated successfully",
+      responseCode: 200,
+      data: updatedPatient,
+    });
+  } catch (error) {
+    console.error("Error updating patient:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -183,6 +219,7 @@ module.exports = {
   registerCompounder,
   loginCompounder,
   registerPatientByCompounder,
-  getLatestPatientByAdharCard,
+  getLatestPatientByID,
   listOfPatients,
+  updatePatient,
 };

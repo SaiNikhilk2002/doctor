@@ -31,6 +31,10 @@ mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
 });
 
+// const uri = 'mongodb+srv://username:password@cluster0.51duirc.mongodb.net/yourdatabase?retryWrites=true&w=majority';
+// mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
 const db = mongoose.connection;
 
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
