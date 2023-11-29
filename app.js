@@ -51,3 +51,15 @@ app.post("/register-patient-by-compounder", registerPatientByCompounder);
 
 //get the latest patient details
 app.get("/patients-list", listOfPatients);
+
+
+// get the latest patient details by Aadhar card number
+app.get("/get-patient/:patientId", getLatestPatientByID);
+
+// update patient details
+app.put("/update-patient/:patientId", updatePatient);
+
+//////////////server/////////////////////
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
