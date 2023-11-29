@@ -1,5 +1,3 @@
-const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
@@ -15,25 +13,17 @@ const {
 } = require("./controller/compounder");
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(bodyParser.json());
 
 //////////////connection to database////////////////////
-// mongoose.connect("mongodb://localhost:27017/doctor_house", {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-// });
-
-mongoose.connect(process.env.MONGO_URL, {
+uri= "mongodb+srv://ajayamunik:Nfed6RWJWGDd2fMN@cluster0.51duirc.mongodb.net/doctor_house"
+mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
-// const uri = 'mongodb+srv://username:password@cluster0.51duirc.mongodb.net/yourdatabase?retryWrites=true&w=majority';
-// mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
 
 const db = mongoose.connection;
 
@@ -61,11 +51,3 @@ app.post("/register-patient-by-compounder", registerPatientByCompounder);
 
 //get the latest patient details
 app.get("/patients-list", listOfPatients);
-
-// get the latest patient details by Aadhar card number
-app.get("/get-patient/:adharCardNo", getLatestPatientByAdharCard);
-
-//////////////server/////////////////////
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
